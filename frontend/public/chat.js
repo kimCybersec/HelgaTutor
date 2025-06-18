@@ -47,8 +47,9 @@ async function loadHistory() {
 
     if (Array.isArray(data.history)) {
       data.history.forEach(m => {
-        if (m.user) addMessage("user", m.user);
-        if (m.bot) addMessage("assistant", m.bot);
+        if (m.user || m.student) addMessage("user", m.user || m.student);
+        if (m.bot || m.Helga) addMessage("assistant", m.bot || m.Helga);
+
       });
     } else {
       addMessage("assistant", "⚠️ Invalid chat history format.");
