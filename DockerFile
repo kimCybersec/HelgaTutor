@@ -7,7 +7,7 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/*
 
 # Set working directory
-WORKDIR /wsgi
+WORKDIR /app
 
 # Copy requirements first to leverage Docker cache
 COPY requirements.txt .
@@ -22,4 +22,4 @@ COPY . .
 EXPOSE 10000
 
 # Run Gunicorn (replace 'api:app' with your Flask app entry point)
-CMD ["gunicorn", "wsgi:app", "--bind", "0.0.0.0:10000"]
+CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:10000"]
