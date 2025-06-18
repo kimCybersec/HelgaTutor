@@ -1,25 +1,28 @@
-# Use official Python image
-FROM python:3.10
+# Use an official Python runtime as a base image
+FROM python:3.10-slim
 
-# Install Java (required for pyjnius)
-RUN apt-get update && \
-    apt-get install -y openjdk-17-jdk && \
-    rm -rf /var/lib/apt/lists/*
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
 
-# Set working directory
+# Create and set working directory
 WORKDIR /app
 
-# Copy requirements first to leverage Docker cache
-COPY requirements.txt .
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+COPY requirements.txt .
+RUN pip install --upgrade pip && \
+    pip install -r requirements.txt --no-cache-dir
 
-# Copy the rest of the application
+# Copy the entire project
 COPY . .
 
-# Expose port (adjust if needed)
-EXPOSE 10000
+# The critical fix - tell Gunicorn where to find your app
+ENV FLASK_APP=wsgi.py
 
-# Run Gunicorn (replace 'api:app' with your Flask app entry point)
-CMD ["gunicorn", "app:app", "--bind", "0.0.0.0:10000"]
+# Run Gunicorn (make sure it's installed in requirements.txt)
+CMD ["gunicorn", "--bind", "0.0.0.0:$PORT", "wsgi:app"]
