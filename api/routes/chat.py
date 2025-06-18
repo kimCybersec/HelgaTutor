@@ -30,8 +30,9 @@ def history(session_id):
         logger.info(f"Fetching history for session: {session_id}")
         history = getChatHistory(session_id) 
         logger.info(f"Session result: {history}")
-        return jsonify({"session": history}) 
+        return jsonify({"history": history})  # ✅ FIXED
     
     except Exception as e: 
         logger.error(f"History error for session {session_id}: {str(e)}") 
         return jsonify({"error": str(e)}), 500
+
