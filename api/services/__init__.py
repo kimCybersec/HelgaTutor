@@ -1,7 +1,5 @@
-from api.services.openaiHelper import generate_response
-from api.utils.safetyChecker import is_safe
+from api.services.openaiHelper import generateResponse
 
 __all__ = [
-    "generate_response",
-    "is_safe"
+    "generateResponse",
 ]

@@ -3,12 +3,12 @@ import json
 import base64
 from firebase_admin import credentials, firestore, initialize_app
 
-cred_data = os.environ.get("GOOGLE_CREDENTIALS")
+credData = os.environ.get("GOOGLE_CREDENTIALS")
 
-if cred_data:
-    decoded = base64.b64decode(cred_data).decode("utf-8")
-    cred_json = json.loads(decoded)
-    cred = credentials.Certificate(cred_json)
+if credData:
+    decoded = base64.b64decode(credData).decode("utf-8")
+    credJson = json.loads(decoded)
+    cred = credentials.Certificate(credJson)
 else:
     cred = credentials.Certificate("mensmentalhealth.json")
 
@@ -16,19 +16,19 @@ initialize_app(cred)
 
 db = firestore.client()
 
-def save_chat(session_id, user_msg, bot_msg):
-    session_ref = db.collection('chat_sessions').document(session_id)
+def saveChat(session_id, user_msg, helga_msg):
+    session_ref = db.collection('helgaSessions').document(session_id)
     session_ref.set({
-        "history": firestore.ArrayUnion([{"user": user_msg, "bot": bot_msg}])
+        "session": firestore.ArrayUnion([{"student": user_msg, "Helga": helga_msg}])
     }, merge=True)
 
-def get_chat_history(session_id):
+def getChatHistory(session_id):
     try:
-        session_ref = db.collection('chat_sessions').document(session_id)
+        session_ref = db.collection('helgaSessions').document(session_id)
         session_doc = session_ref.get()
         if session_doc.exists:
             data = session_doc.to_dict()
-            return data.get("history", [])
+            return data.get("session", [])
         else:
             return []
     except Exception as e:

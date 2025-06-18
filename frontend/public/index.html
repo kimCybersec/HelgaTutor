@@ -3,59 +3,36 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>🧠 KIM</title>
-  <link rel="stylesheet" href="/style.css" />
+  <title>Helga 👩‍🏫</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="chat-container">
-    <h2>🧠 Know Internal Mind</h2>
-    <label for="language-select">Choose language:</label>
-    <select id="language-select">
-      <option value="en">English</option>
-      <option value="de">Deutsch</option>
-      <option value="sw">Kiswahili</option>
-      <option value="fr">Français</option>
-      <option value="es">Español</option>
-      <option value="it">Italiano</option>
-      <option value="pt">Português</option>
-      <option value="ar">العربية</option>
-      <option value="zh">中文</option>
-      <option value="hi">हिन्दी</option>
-      <option value="ja">日本語</option>
-      <option value="ru">Русский</option>
-      <option value="tr">Türkçe</option>
-      <option value="nl">Nederlands</option>
-      <option value="ko">한국어</option>
-      <option value="vi">Tiếng Việt</option>
-      <option value="pl">Polski</option>
-      <option value="th">ไทย</option>
-      <option value="id">Bahasa Indonesia</option>
-      <option value="fi">Suomi</option>
-      <option value="no">Norsk</option>
-      <option value="da">Dansk</option>
-      <option value="sv">Svenska</option>
-      <option value="el">Ελληνικά</option>
-      <option value="hu">Magyar</option>
-      <option value="cs">Čeština</option>
-      <option value="ro">Română</option>
-      <option value="bg">Български</option>
-      <option value="uk">Українська</option>
-      <option value="he">עברית</option>
-      <option value="ms">Bahasa Melayu</option>
-      <option value="tl">Tagalog</option>
+    <h2>Sprich mit Helga 🇩🇪</h2>
+
+    <label for="level">Choose your level:</label>
+    <select id="level">
+      <option value="A1">A1</option>
+      <option value="A2">A2</option>
+      <option value="B1">B1</option>
+      <option value="B2">B2</option>
+      <option value="C1">C1</option>
+      <option value="C2">C2</option>
     </select>
-    
-        <button id="clear-session">🧹 Clear Session</button>
 
     <div id="chat-box" class="chat-box"></div>
 
     <form id="chat-form">
+      <button type="button" id="voice-btn" class="voice-button">🎤</button>
       <input type="text" id="message" placeholder="Talk to me, niambie..." autocomplete="off" required />
       <button type="submit" class="send-button">➤</button>
+      <button id="clear-session">🧹 Clear Session</button>
+
     </form>
+
   </div>
 
-  <script src="/chat.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="chat.js"></script>
 </body>
 </html>

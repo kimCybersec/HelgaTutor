@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify 
 from api.middleware.rateLimiter import limiter 
-from api.services.firestore import save_chat, get_chat_history 
-from api.services.openaiHelper import generate_response 
+from api.services.firestore import saveChat, getChatHistory 
+from api.services.openaiHelper import generateResponse 
 from api.utils.logger import logger
 
 chat_bp = Blueprint('chat', __name__)
@@ -12,11 +12,11 @@ def chat():
     try: 
         data = request.get_json() 
         messages = data.get("messages", []) 
-        lang = data.get("lang", "en") 
+        level = data.get("level", "A1") 
         session_id = data.get("session_id", "anonymous")
 
-        result = generate_response(messages, lang)
-        save_chat(session_id, messages[-1]['content'], result['reply'])
+        result = generateResponse(messages, level)
+        saveChat(session_id, messages[-1]['content'], result['reply'])
         return jsonify(result)
 
     except Exception as e:
@@ -28,9 +28,9 @@ def chat():
 def history(session_id): 
     try: 
         logger.info(f"Fetching history for session: {session_id}")
-        history = get_chat_history(session_id) 
-        logger.info(f"History result: {history}")
-        return jsonify({"history": history}) 
+        history = getChatHistory(session_id) 
+        logger.info(f"Session result: {history}")
+        return jsonify({"session": history}) 
     
     except Exception as e: 
         logger.error(f"History error for session {session_id}: {str(e)}") 

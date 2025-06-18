@@ -6,6 +6,9 @@ const chatBox = document.getElementById("chat-box");
 const form = document.getElementById("chat-form");
 const clearBtn = document.getElementById("clear-session");
 const langSelect = document.getElementById("language-select");
+const levelSelect = document.getElementById("level");
+const voiceBtn = document.getElementById("voice-btn");
+const input = document.getElementById("message");
 
 function addMessage(role, content) {
   const msg = document.createElement("div");
@@ -19,9 +22,9 @@ function addMessage(role, content) {
   const bubble = document.createElement("div");
   bubble.className = "bubble";
 
-  // Render markdown for assistant, plain text for user
   if (role === "assistant") {
     bubble.innerHTML = marked.parse(content);
+    speak(content); 
   } else {
     bubble.innerText = content;
   }
@@ -58,10 +61,44 @@ async function loadHistory() {
 
 form.onsubmit = async (e) => {
   e.preventDefault();
-  const input = document.getElementById("message");
   const msg = input.value.trim();
   if (!msg) return;
+  await sendMessage(msg);
+};
 
+clearBtn.onclick = () => {
+  localStorage.removeItem("session_id");
+  location.reload();
+};
+
+voiceBtn.onclick = () => {
+  const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+  recognition.lang = "de-DE";
+  recognition.interimResults = false;
+
+  recognition.onstart = () => {
+    voiceBtn.innerText = "🎙️ Listening...";
+  };
+
+  recognition.onerror = (event) => {
+    console.error("Voice error:", event.error);
+    voiceBtn.innerText = "🎤 Voice Input";
+  };
+
+  recognition.onend = () => {
+    voiceBtn.innerText = "🎤 Voice Input";
+  };
+
+  recognition.onresult = async (event) => {
+    const transcript = event.results[0][0].transcript;
+    input.value = transcript;
+    await sendMessage(transcript);
+  };
+
+  recognition.start();
+};
+
+async function sendMessage(msg) {
   addMessage("user", msg);
   input.value = "";
 
@@ -71,21 +108,24 @@ form.onsubmit = async (e) => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         messages: [{ role: "user", content: msg }],
-        lang: langSelect.value,
+        lang: langSelect?.value || "de",
+        level: levelSelect?.value || "A1",
         session_id: sessionId
       })
     });
+
     const data = await res.json();
     addMessage("assistant", data.reply);
   } catch (err) {
     console.error("Fetch error:", err);
     addMessage("assistant", "⚠️ Error reaching the server.");
   }
-};
+}
 
-clearBtn.onclick = () => {
-  localStorage.removeItem("session_id");
-  location.reload();
-};
+function speak(text) {
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = "de-DE";
+  speechSynthesis.speak(utterance);
+}
 
 window.onload = loadHistory;

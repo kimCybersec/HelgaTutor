@@ -1,7 +1,6 @@
 from flask import Flask
 from flask_cors import CORS
 from api.routes.chat import chat_bp
-import os
 
 
 app = Flask(__name__)
@@ -14,4 +13,4 @@ app.register_blueprint(chat_bp, url_prefix="/api/chat")
 
 @app.route("/")
 def home():
-    return {"message": "Mental Health Chatbot API is running!"}
+    return {"message": "Helga the tutor is running!"}

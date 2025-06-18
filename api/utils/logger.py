@@ -1,7 +1,7 @@
 import logging 
 
 
-logger = logging.getLogger("mentalHealthBot")
+logger = logging.getLogger("HelgaTutor")
 logger.setLevel(logging.INFO)
 
 handler = logging.StreamHandler()
