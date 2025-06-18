@@ -1,12 +1,12 @@
-# Use an official Python runtime as a base image
 FROM python:3.10-slim
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
+ENV FLASK_APP=api.app  
 
-# Create and set working directory
-WORKDIR /app
+# Create working directory (use a different name to avoid conflicts)
+WORKDIR /code
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -18,11 +18,8 @@ COPY requirements.txt .
 RUN pip install --upgrade pip && \
     pip install -r requirements.txt --no-cache-dir
 
-# Copy the entire project
+# Copy project files
 COPY . .
 
-# The critical fix - tell Gunicorn where to find your app
-ENV FLASK_APP=wsgi.py
-
-# Run Gunicorn (make sure it's installed in requirements.txt)
-CMD ["gunicorn", "--bind", "0.0.0.0:10000", "wsgi:app"]
+# Correct Gunicorn command
+CMD ["gunicorn", "--bind", "0.0.0.0:10000", "api.app:app"]
