@@ -19,7 +19,7 @@ db = firestore.client()
 def saveChat(session_id, user_msg, helga_msg):
     session_ref = db.collection('helgaSessions').document(session_id)
     session_ref.set({
-        "session": firestore.ArrayUnion([{"student": user_msg, "Helga": helga_msg}])
+        "session": firestore.ArrayUnion([{"user": user_msg, "bot": helga_msg}])
     }, merge=True)
 
 def getChatHistory(session_id):
