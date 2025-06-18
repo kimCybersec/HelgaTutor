@@ -25,4 +25,4 @@ COPY . .
 ENV FLASK_APP=wsgi.py
 
 # Run Gunicorn (make sure it's installed in requirements.txt)
-CMD ["gunicorn", "--bind", "0.0.0.0:$PORT", "wsgi:app"]
+CMD ["gunicorn", "--bind", "0.0.0.0:10000", "wsgi:app"]
