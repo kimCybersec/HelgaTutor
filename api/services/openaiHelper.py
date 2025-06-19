@@ -61,7 +61,7 @@ def generateResponse(messages, level):
         response = model.generate_content(
             geminiMessages,
             generation_config=genai.types.GenerationConfig(
-                temperature=0.7,
+                temperature=1.5,
                 max_output_tokens=1000
             )
         )
