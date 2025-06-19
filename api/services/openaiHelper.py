@@ -55,7 +55,7 @@ def generateResponse(messages, level):
 Always remember: The most important thing is to adapt your language to the CEFR level **{level}** and to create a positive learning experience.
         """
 
-    geminiMessages = [{"role": "system", "parts": [sysPrompt]}]
+    geminiMessages = [{"role": "user", "parts": [sysPrompt]}]  
 
     for msg in messages:
         if msg["role"] in ["user", "assistant"]:
