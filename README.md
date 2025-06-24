@@ -107,9 +107,9 @@ This project is licensed under the MIT License – see the [LICENSE](LICENSE) fi
 
 Got feedback or questions? Want to chat about German? Drop us a message:
 
-- **Email**: helgathetutor@example.com
-- **GitHub Repo**: [https://github.com/yourusername/helga-the-tutor](https://github.com/yourusername/helga-the-tutor)
-- **Twitter**: [@HelgaTutor](https://twitter.com/HelgaTutor)
+- **Email**: kimutairainner@gmail.com
+- **GitHub Repo**: [https://github.com/yourusername/helga-the-tutor](https://github.com/kimCybersec/helga-the-tutor)
+- **Twitter**: [@HelgaTutor](https://twitter.com/kimutairainner)
 
 ---
 
