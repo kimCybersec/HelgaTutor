@@ -1,18 +1,23 @@
-Helga the Tutor 🗣️🇩🇪
+```markdown
+# Helga the Tutor 🗣️🇩🇪
 
-Welcome to Helga the Tutor 🗣️🇩🇪, a friendly and approachable German tutor built to help students learn German through interactive conversation! Whether you're a beginner or looking to sharpen your skills, Helga is here to assist with vocabulary, grammar and sentence construction. 
+Welcome to **Helga the Tutor**, a friendly and approachable German tutor built to help students learn German through interactive conversation! Whether you're a beginner or looking to sharpen your skills, **Helga** is here to assist with vocabulary, grammar, and sentence construction. 
 
-This web app was built with love using Python, HTML, JavaScript, and CSS, aiming to provide an easy-to-use, chat-based learning environment that mimics the experience of having a tutor by your side. 🌟
+This web app was built with love using **Python**, **HTML**, **JavaScript**, and **CSS**, aiming to provide an easy-to-use, chat-based learning environment that mimics the experience of having a tutor by your side. 🌟
 
-Features ✨
+---
 
-- Interactive Conversations: Chat with Helga in real-time to practice your German.
-- Grammar and Vocabulary Tips: Get personalized feedback on your German language skills.
-- User-Friendly Interface: A simple, clean, and welcoming design to keep you focused on learning.
-- Beginner-Friendly: Designed to be approachable for people new to the German language.
--Progress Tracking: Track your learning milestones and improve at your own pace.
+## Features ✨
 
-🛠️ Technologies Used
+- **Interactive Conversations**: Chat with Helga in real-time to practice your German.
+- **Grammar and Vocabulary Tips**: Get personalized feedback on your German language skills.
+- **User-Friendly Interface**: A simple, clean, and welcoming design to keep you focused on learning.
+- **Beginner-Friendly**: Designed to be approachable for people new to the German language.
+- **Progress Tracking**: Track your learning milestones and improve at your own pace.
+
+---
+
+## 🛠️ Technologies Used
 
 - **Python**: Backend logic and handling user interactions.
 - **HTML**: Structuring the content of the web app.
@@ -35,7 +40,7 @@ Before running the app locally, make sure you have the following installed:
 1. **Clone the repository**:
 
    ```bash
-   git clone https://github.com/kimCybersec/helga-the-tutor.git
+   git clone https://github.com/yourusername/helga-the-tutor.git
    cd helga-the-tutor
    ```
 
