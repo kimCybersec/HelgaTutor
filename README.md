@@ -1,4 +1,3 @@
-```markdown
 # Helga the Tutor 🗣️🇩🇪
 
 Welcome to **Helga the Tutor**, a friendly and approachable German tutor built to help students learn German through interactive conversation! Whether you're a beginner or looking to sharpen your skills, **Helga** is here to assist with vocabulary, grammar, and sentence construction. 
@@ -40,7 +39,7 @@ Before running the app locally, make sure you have the following installed:
 1. **Clone the repository**:
 
    ```bash
-   git clone https://github.com/yourusername/helga-the-tutor.git
+   git clone https://github.com/kimCybersec/helga-the-tutor.git
    cd helga-the-tutor
    ```
 
