@@ -1,132 +1,94 @@
 const apiBase = "https://helgatutorapi.onrender.com/api/chat";
-let sessionId = localStorage.getItem("session_id") || Date.now().toString();
+let sessionId = localStorage.getItem("session_id") || generateSessionId();
 localStorage.setItem("session_id", sessionId);
 
-const chatBox = document.getElementById("chat-box");
-const form = document.getElementById("chat-form");
-const clearBtn = document.getElementById("clear-session");
-const langSelect = document.getElementById("language-select");
-const levelSelect = document.getElementById("level");
-const voiceBtn = document.getElementById("voice-btn");
-const input = document.getElementById("message");
-
-function addMessage(role, content) {
-  const msg = document.createElement("div");
-  msg.className = `message ${role}`;
-
-  const avatar = document.createElement("img");
-  avatar.className = "avatar";
-  avatar.src = role === "user" ? "user.png" : "bot.png";
-  avatar.alt = `${role} avatar`;
-
-  const bubble = document.createElement("div");
-  bubble.className = "bubble";
-
-  if (role === "assistant") {
-    bubble.innerHTML = marked.parse(content);
-    speak(content); 
-  } else {
-    bubble.innerText = content;
-  }
-
-  const time = document.createElement("div");
-  time.className = "timestamp";
-  time.innerText = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-
-  msg.appendChild(avatar);
-  msg.appendChild(bubble);
-  msg.appendChild(time);
-  chatBox.appendChild(msg);
-  chatBox.scrollTop = chatBox.scrollHeight;
+// Generate a more unique session ID
+function generateSessionId() {
+    return 'session-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
 }
 
+// Load conversation history with context
 async function loadHistory() {
-  try {
-    const res = await fetch(`${apiBase}/history/${sessionId}`);
-    const data = await res.json();
+    try {
+        const res = await fetch(`${apiBase}/history/${sessionId}`);
+        const data = await res.json();
 
-    if (Array.isArray(data.history)) {
-      data.history.forEach(m => {
-        if (m.user || m.student) addMessage("user", m.user || m.student);
-        if (m.bot || m.Helga) addMessage("assistant", m.bot || m.Helga);
-
-      });
-    } else {
-      addMessage("assistant", "⚠️ Invalid chat history format.");
+        if (Array.isArray(data.history)) {
+            // Process history to maintain context
+            data.history.forEach(msg => {
+                if (msg.user) addMessage("user", msg.user);
+                if (msg.bot) addMessage("assistant", msg.bot);
+            });
+            
+            // If no history, start with a welcome message
+            if (data.history.length === 0) {
+                addMessage("assistant", "Hallo! Ich bin Helga, deine Deutschlehrerin. Wie kann ich dir heute helfen?");
+            }
+        } else {
+            addMessage("assistant", "Willkommen! Lass uns Deutsch üben. Worüber möchtest du sprechen?");
+        }
+    } catch (err) {
+        console.error("Failed to load chat history:", err);
+        addMessage("assistant", "Hallo! Lass uns Deutsch lernen. Was möchtest du üben?");
     }
-  } catch (err) {
-    console.error("Failed to load chat history:", err);
-    addMessage("assistant", "⚠️ Could not load chat history.");
-  }
 }
 
-form.onsubmit = async (e) => {
-  e.preventDefault();
-  const msg = input.value.trim();
-  if (!msg) return;
-  await sendMessage(msg);
-};
-
-clearBtn.onclick = () => {
-  localStorage.removeItem("session_id");
-  location.reload();
-};
-
-voiceBtn.onclick = () => {
-  const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-  recognition.lang = "de-DE";
-  recognition.interimResults = false;
-
-  recognition.onstart = () => {
-    voiceBtn.innerText = "🎙️ Listening...";
-  };
-
-  recognition.onerror = (event) => {
-    console.error("Voice error:", event.error);
-    voiceBtn.innerText = "🎤 Voice Input";
-  };
-
-  recognition.onend = () => {
-    voiceBtn.innerText = "🎤 Voice Input";
-  };
-
-  recognition.onresult = async (event) => {
-    const transcript = event.results[0][0].transcript;
-    input.value = transcript;
-    await sendMessage(transcript);
-  };
-
-  recognition.start();
-};
-
+// Send message with context
 async function sendMessage(msg) {
-  addMessage("user", msg);
-  input.value = "";
+    if (!msg.trim()) return;
+    
+    addMessage("user", msg);
+    input.value = "";
+    showTypingIndicator();
+    
+    try {
+        // Get current conversation for context
+        const conversation = getCurrentConversation();
+        
+        const res = await fetch(apiBase, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                messages: [
+                    ...conversation,
+                    { role: "user", content: msg }
+                ],
+                level: levelSelect.value,
+                session_id: sessionId
+            })
+        });
 
-  try {
-    const res = await fetch(apiBase, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        messages: [{ role: "user", content: msg }],
-        lang: langSelect?.value || "de",
-        level: levelSelect?.value || "A1",
-        session_id: sessionId
-      })
+        const data = await res.json();
+        hideTypingIndicator();
+        addMessage("assistant", data.reply);
+    } catch (err) {
+        hideTypingIndicator();
+        console.error("Fetch error:", err);
+        addMessage("assistant", "⚠️ Es gab ein Problem mit der Verbindung. Bitte versuche es erneut.");
+    }
+}
+
+// Get current conversation from DOM
+function getCurrentConversation() {
+    const messages = [];
+    const messageElements = document.querySelectorAll('.message');
+    
+    messageElements.forEach(el => {
+        const role = el.classList.contains('user') ? 'user' : 'assistant';
+        const content = el.querySelector('.bubble').innerText;
+        messages.push({ role, content });
     });
-
-    const data = await res.json();
-    addMessage("assistant", data.reply);
-  } catch (err) {
-    console.error("Fetch error:", err);
-    addMessage("assistant", "⚠️ Error reaching the server.");
-  }
+    
+    return messages;
 }
 
-function speak(text) {
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = "de-DE";
-  speechSynthesis.speak(utterance);
-}
-
-window.onload = loadHistory;
+// Clear session properly
+clearBtn.onclick = () => {
+    if (confirm("Möchtest du wirklich eine neue Sitzung starten? Der gesamte Chat-Verlauf wird gelöscht.")) {
+        localStorage.removeItem("session_id");
+        sessionId = generateSessionId();
+        localStorage.setItem("session_id", sessionId);
+        chatBox.innerHTML = '';
+        addMessage("assistant", "Hallo! Ich bin Helga. Lass uns eine neue Deutschstunde beginnen!");
+    }
+};

@@ -1,6 +1,7 @@
 import os
 import json
 import base64
+from api.utils.logger import logger
 from firebase_admin import credentials, firestore, initialize_app
 
 credData = os.environ.get("GOOGLE_CREDENTIALS")
@@ -17,10 +18,25 @@ initialize_app(cred)
 db = firestore.client()
 
 def saveChat(session_id, user_msg, helga_msg):
-    session_ref = db.collection('helgaSessions').document(session_id)
-    session_ref.set({
-        "session": firestore.ArrayUnion([{"user": user_msg, "bot": helga_msg}])
-    }, merge=True)
+    try:
+        session_ref = db.collection('helgaSessions').document(session_id)
+        
+        existing_data = session_ref.get().to_dict() or {}
+        existing_messages = existing_data.get("session", [])
+        
+        new_messages = existing_messages + [{
+            "user": user_msg,
+            "bot": helga_msg,
+            "timestamp": firestore.SERVER_TIMESTAMP
+        }]
+        
+        session_ref.set({
+            "session": new_messages[-20:],
+            "last_updated": firestore.SERVER_TIMESTAMP
+        })
+    except Exception as e:
+        logger.error(f"Error saving chat: {e}")
+        raise
 
 def getChatHistory(session_id):
     try:

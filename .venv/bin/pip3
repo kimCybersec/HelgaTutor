@@ -1,4 +1,4 @@
-#!/home/kim/vsCode/personal/mentalCheck/.venv/bin/python
+#!/home/kim/vsCode/HelgaTutor/.venv/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys

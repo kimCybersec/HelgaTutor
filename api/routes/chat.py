@@ -14,15 +14,31 @@ def chat():
         messages = data.get("messages", []) 
         level = data.get("level", "A1") 
         session_id = data.get("session_id", "anonymous")
+        
+        history = getChatHistory(session_id)
+        context_messages = []
+        
+        for msg in history:
+            if 'user' in msg:
+                context_messages.append({"role": "user", "content": msg['user']})
+            if 'bot' in msg:
+                context_messages.append({"role": "assistant", "content": msg['bot']})        
+        if messages:
+            context_messages.extend(messages)
 
-        result = generateResponse(messages, level)
-        saveChat(session_id, messages[-1]['content'], result['reply'])
-        return jsonify(result)
+        result = generateResponse(context_messages, level)
+        saveChat(session_id, messages[-1]['content'] if messages else "", result['reply'])
+        
+        return jsonify({
+            "reply": result['reply'],
+            "session_id": session_id
+        })
 
     except Exception as e:
         logger.error(f"Chat error: {str(e)}")
         return jsonify({"error": str(e)}), 500
-
+    
+    
 @chat_bp.route('/history/<session_id>', methods=['GET']) 
 @limiter 
 def history(session_id): 
@@ -30,7 +46,7 @@ def history(session_id):
         logger.info(f"Fetching history for session: {session_id}")
         history = getChatHistory(session_id) 
         logger.info(f"Session result: {history}")
-        return jsonify({"history": history})  # ✅ FIXED
+        return jsonify({"history": history})  
     
     except Exception as e: 
         logger.error(f"History error for session {session_id}: {str(e)}") 

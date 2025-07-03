@@ -1,37 +1,58 @@
+<!-- Updated index.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Helga 👩‍🏫</title>
+  <title>Helga 👩‍🏫 German Tutor</title>
   <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-  <div class="chat-container">
-    <h2>Sprich mit Helga 🇩🇪</h2>
+  <header class="main-header">
+    <h1>Helga - Your German Tutor</h1>
+    <nav class="main-nav">
+      <a href="/" class="nav-link active"><i class="fas fa-comments"></i> Chat</a>
+      <a href="/resources" class="nav-link"><i class="fas fa-book"></i> Resources</a>
+    </nav>
+  </header>
 
-    <label for="level">Choose your level:</label>
-    <select id="level">
-      <option value="A1">A1</option>
-      <option value="A2">A2</option>
-      <option value="B1">B1</option>
-      <option value="B2">B2</option>
-      <option value="C1">C1</option>
-      <option value="C2">C2</option>
-    </select>
+  <div class="content-container">
+    <div class="controls-container">
+      <div class="level-selector">
+        <label for="level">Deutsch Niveau:</label>
+        <select id="level">
+          <option value="A1">A1 (Beginner)</option>
+          <option value="A2">A2 (Elementary)</option>
+          <option value="B1">B1 (Intermediate)</option>
+          <option value="B2">B2 (Upper Intermediate)</option>
+          <option value="C1">C1 (Advanced)</option>
+          <option value="C2">C2 (Proficient)</option>
+        </select>
+      </div>
+      <button id="clear-session" class="btn-danger"><i class="fas fa-trash-alt"></i> Neue Sitzung</button>
+    </div>
 
-    <div id="chat-box" class="chat-box"></div>
+    <div class="chat-container">
+      <div id="chat-box" class="chat-box"></div>
 
-    <form id="chat-form">
-      <button type="button" id="voice-btn" class="voice-button">🎤</button>
-      <input type="textarea" id="message" placeholder="Spicht mit mir..." autocomplete="off" required />
-      <button type="submit" class="send-button">➤</button>
-      <button id="clear-session">🧹 Clear Session</button>
-
-    </form>
-
+      <form id="chat-form">
+        <button type="button" id="voice-btn" class="voice-button" title="Voice Input">
+          <i class="fas fa-microphone"></i>
+        </button>
+        <textarea id="message" placeholder="Schreiben Sie hier..." autocomplete="off" required rows="1"></textarea>
+        <button type="submit" class="send-button" title="Send">
+          <i class="fas fa-paper-plane"></i>
+        </button>
+      </form>
+    </div>
   </div>
+
+  <footer class="main-footer">
+    <p>© 2023 Helga German Tutor | Learn German with AI assistance</p>
+  </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="chat.js"></script>
