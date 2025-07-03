@@ -19,20 +19,18 @@ def generateResponse(messages, level):
     """
     
     try:
-        model = genai.GenerativeModel('gemini-2.0-flash')
-        
-        # Prepare conversation history in correct format
+        model = genai.GenerativeModel('gemini-2.5-flash')
         chat = model.start_chat(history=[])
         
-        # Add system prompt first
+        # Start with system prompt
         response = chat.send_message(sysPrompt)
         
         # Add conversation history
-        for msg in messages[-6:]:  # Keep last 6 messages for context
+        for msg in messages:
             if msg['role'] == 'user':
                 response = chat.send_message(msg['content'])
             elif msg['role'] == 'assistant':
-                # For assistant messages, we need to add them to history
+                # Add assistant responses to chat history
                 chat.history.append({
                     'role': 'model',
                     'parts': [msg['content']]

@@ -2,8 +2,8 @@ from flask import request, jsonify
 from functools import wraps
 import time
 
-rateLimitWindow = 60 # seconds 
-maxRequests = 600 
+rateLimitWindow = 60 
+maxRequests = 60
 requestLog = {}
 
 def limiter(func): 

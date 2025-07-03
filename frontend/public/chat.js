@@ -208,8 +208,16 @@ document.addEventListener('DOMContentLoaded', function() {
         showTypingIndicator();
         
         try {
+            // Get current conversation from DOM for context
+            const conversation = Array.from(document.querySelectorAll('.message')).map(el => {
+                return {
+                    role: el.classList.contains('user') ? 'user' : 'assistant',
+                    content: el.querySelector('.bubble').innerText
+                };
+            });
+
             const payload = {
-                messages: [{ role: "user", content: msg }],
+                messages: conversation,
                 level: levelSelect.value,
                 session_id: sessionId
             };

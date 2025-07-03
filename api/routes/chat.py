@@ -15,8 +15,14 @@ def chat():
         level = data.get("level", "A1") 
         session_id = data.get("session_id", "anonymous")
 
-        # Generate response
-        result = generateResponse(messages, level)
+        # Get previous conversation history
+        history = getChatHistory(session_id)
+        
+        # Combine history with current messages
+        all_messages = history + messages
+        
+        # Generate response with full context
+        result = generateResponse(all_messages, level)
         
         # Save to Firestore
         saveChat(
@@ -35,7 +41,7 @@ def chat():
         return jsonify({
             "error": str(e),
             "reply": "Entschuldigung! Es gab ein Problem."
-        }), 500    
+        }), 500  
     
 @chat_bp.route('/history/<session_id>', methods=['GET']) 
 @limiter 

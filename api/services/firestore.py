@@ -20,22 +20,23 @@ db = firestore.client()
 def saveChat(session_id, user_msg, helga_msg):
     try:
         session_ref = db.collection('helgaSessions').document(session_id)
-        
-        # Use datetime.now() instead of SERVER_TIMESTAMP
         timestamp = datetime.now()
         
-        # Prepare the new message data
-        new_message = {
-            "user": user_msg,
-            "bot": helga_msg,
-            "timestamp": timestamp
-        }
+        # Get existing messages
+        existing_data = session_ref.get().to_dict() or {}
+        existing_messages = existing_data.get("messages", [])
         
-        # Update the document
+        # Add new message pair
+        new_messages = existing_messages + [
+            {"role": "user", "content": user_msg, "timestamp": timestamp},
+            {"role": "assistant", "content": helga_msg, "timestamp": timestamp}
+        ]
+        
+        # Update document with all messages
         session_ref.set({
-            "session": firestore.ArrayUnion([new_message]),
+            "messages": new_messages[-20:],  # Keep last 20 messages (10 exchanges)
             "last_updated": timestamp,
-            "level": "A1"  # Default level, can be updated from chat.py
+            "level": "A1"  # Default, can be updated
         }, merge=True)
         
     except Exception as e:
@@ -49,8 +50,8 @@ def getChatHistory(session_id):
         
         if session_doc.exists:
             data = session_doc.to_dict()
-            # Sort messages by timestamp if needed
-            messages = data.get("session", [])
+            messages = data.get("messages", [])
+            # Return sorted by timestamp and formatted for Gemini
             return sorted(messages, key=lambda x: x.get('timestamp', ''))
         return []
     except Exception as e:
