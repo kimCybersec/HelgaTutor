@@ -201,20 +201,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
     async function sendMessage(msg) {
         if (!msg.trim()) return;
-        
+
         addMessage("user", msg);
         input.value = "";
         setLoading(true);
         showTypingIndicator();
-        
+
         try {
-            // Get current conversation from DOM for context
-            const conversation = Array.from(document.querySelectorAll('.message')).map(el => {
-                return {
-                    role: el.classList.contains('user') ? 'user' : 'assistant',
-                    content: el.querySelector('.bubble').innerText
-                };
-            });
+            // Get current conversation from DOM for context, filter out empty content
+            const conversation = Array.from(document.querySelectorAll('.message'))
+                .map(el => {
+                    return {
+                        role: el.classList.contains('user') ? 'user' : 'assistant',
+                        content: el.querySelector('.bubble').innerText
+                    };
+                })
+                .filter(m => m.content && m.content.trim().length > 0); // <-- filter out empty
 
             const payload = {
                 messages: conversation,
