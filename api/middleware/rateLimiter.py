@@ -3,7 +3,7 @@ from functools import wraps
 import time
 
 rateLimitWindow = 60 # seconds 
-maxRequests = 30 
+maxRequests = 600 
 requestLog = {}
 
 def limiter(func): 

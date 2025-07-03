@@ -1,7 +1,7 @@
 import os
 import json
 import base64
-from api.utils.logger import logger
+from datetime import datetime
 from firebase_admin import credentials, firestore, initialize_app
 
 credData = os.environ.get("GOOGLE_CREDENTIALS")
@@ -21,32 +21,38 @@ def saveChat(session_id, user_msg, helga_msg):
     try:
         session_ref = db.collection('helgaSessions').document(session_id)
         
-        existing_data = session_ref.get().to_dict() or {}
-        existing_messages = existing_data.get("session", [])
+        # Use datetime.now() instead of SERVER_TIMESTAMP
+        timestamp = datetime.now()
         
-        new_messages = existing_messages + [{
+        # Prepare the new message data
+        new_message = {
             "user": user_msg,
             "bot": helga_msg,
-            "timestamp": firestore.SERVER_TIMESTAMP
-        }]
+            "timestamp": timestamp
+        }
         
+        # Update the document
         session_ref.set({
-            "session": new_messages[-20:],
-            "last_updated": firestore.SERVER_TIMESTAMP
-        })
+            "session": firestore.ArrayUnion([new_message]),
+            "last_updated": timestamp,
+            "level": "A1"  # Default level, can be updated from chat.py
+        }, merge=True)
+        
     except Exception as e:
-        logger.error(f"Error saving chat: {e}")
-        raise
+        print(f"Error saving chat: {str(e)}")
+        raise RuntimeError(f"Failed to save chat: {str(e)}")
 
 def getChatHistory(session_id):
     try:
         session_ref = db.collection('helgaSessions').document(session_id)
         session_doc = session_ref.get()
+        
         if session_doc.exists:
             data = session_doc.to_dict()
-            return data.get("session", [])
-        else:
-            return []
+            # Sort messages by timestamp if needed
+            messages = data.get("session", [])
+            return sorted(messages, key=lambda x: x.get('timestamp', ''))
+        return []
     except Exception as e:
-        raise RuntimeError(f"Failed to get chat history for {session_id}: {e}")
-
+        print(f"Error getting chat history: {str(e)}")
+        raise RuntimeError(f"Failed to get chat history: {str(e)}")
