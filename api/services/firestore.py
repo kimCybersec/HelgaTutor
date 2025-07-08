@@ -22,21 +22,21 @@ def saveChat(session_id, user_msg, helga_msg):
         session_ref = db.collection('helgaSessions').document(session_id)
         timestamp = datetime.now()
         
-        # Get existing messages
+        # get messages
         existing_data = session_ref.get().to_dict() or {}
         existing_messages = existing_data.get("messages", [])
         
-        # Add new message pair
+        # add message
         new_messages = existing_messages + [
             {"role": "user", "content": user_msg, "timestamp": timestamp},
             {"role": "assistant", "content": helga_msg, "timestamp": timestamp}
         ]
         
-        # Update document with all messages
+        # update document with all messages
         session_ref.set({
-            "messages": new_messages[-20:],  # Keep last 20 messages (10 exchanges)
+            "messages": new_messages[-20:],
             "last_updated": timestamp,
-            "level": "A1"  # Default, can be updated
+            "level": "A1"
         }, merge=True)
         
     except Exception as e:
@@ -51,7 +51,6 @@ def getChatHistory(session_id):
         if session_doc.exists:
             data = session_doc.to_dict()
             messages = data.get("messages", [])
-            # Return sorted by timestamp and formatted for Gemini
             return sorted(messages, key=lambda x: x.get('timestamp', ''))
         return []
     except Exception as e:

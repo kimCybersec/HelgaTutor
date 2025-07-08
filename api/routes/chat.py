@@ -14,16 +14,12 @@ def chat():
         messages = data.get("messages", []) 
         level = data.get("level", "A1") 
         session_id = data.get("session_id", "anonymous")
-
-        # Get previous conversation history
+        # get previous conversation
         history = getChatHistory(session_id)
-        
-        # Combine history with current messages
-        all_messages = history + messages
-        
-        # Generate response with full context
+        # combine history
+        all_messages = history + messages        
+        # generate response with full context
         result = generateResponse(all_messages, level)
-        
         # Save to Firestore
         saveChat(
             session_id, 
