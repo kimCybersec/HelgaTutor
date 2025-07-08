@@ -19,7 +19,7 @@ def generateResponse(messages, level):
     """
     
     try:
-        model = genai.GenerativeModel('gemini-2.5-flash')
+        model = genai.GenerativeModel('gemini-2.0-flash')
         chat = model.start_chat(history=[])
         response = chat.send_message(sysPrompt)
         
