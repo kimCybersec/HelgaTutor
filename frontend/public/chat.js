@@ -181,8 +181,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (Array.isArray(data.history)) {
                 data.history.forEach(msg => {
-                    if (msg.user) addMessage("user", msg.user);
-                    if (msg.bot) addMessage("assistant", msg.bot);
+                    // Check for the correct keys
+                    if (msg.role === "user") {
+                        addMessage("user", msg.content);
+                    } else if (msg.role === "assistant") {
+                        addMessage("assistant", msg.content);
+                    }
                 });
                 
                 if (data.history.length === 0) {
