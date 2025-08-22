@@ -35,7 +35,7 @@ def chat():
             "reply": "Entschuldigung! Es gab ein Problem."
         }), 500  
     
-@chat_bp.route('/history/<sessionId>', methods=['GET']) 
+@chat_bp.route('/api/chat/history/<sessionId>', methods=['GET']) 
 @limiter 
 def history(sessionId): 
     try: 
