@@ -35,16 +35,16 @@ def chat():
             "reply": "Entschuldigung! Es gab ein Problem."
         }), 500  
     
-@chat_bp.route('/api/chat/history/<sessionId>', methods=['GET']) 
-@limiter 
-def history(sessionId): 
-    try: 
+@chat_bp.route('/history/<sessionId>', methods=['GET'])
+@limiter
+def history(sessionId):
+    try:
         logger.info(f"Fetching history for session: {sessionId}")
-        history = getChatHistory(sessionId) 
+        history = getChatHistory(sessionId)
         logger.info(f"Session result: {history}")
-        return jsonify({"history": history})  
-    
-    except Exception as e: 
-        logger.error(f"History error for session {sessionId}: {str(e)}") 
+        return jsonify({"history": history})
+
+    except Exception as e:
+        logger.error(f"History error for session {sessionId}: {str(e)}")
         return jsonify({"error": str(e)}), 500
 
