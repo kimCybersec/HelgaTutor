@@ -12,17 +12,13 @@ def chat():
     try: 
         data = request.get_json() 
         messages = data.get("messages", []) 
-        level = data.get("level", "A1") 
-        session_id = data.get("session_id", "anonymous")
-        # get previous conversation
-        history = getChatHistory(session_id)
-        # combine history
+        level = data.get("level", []) 
+        sessionId = data.get("sessionId", "anonymous")
+        history = getChatHistory(sessionId)
         all_messages = history + messages        
-        # generate response with full context
         result = generateResponse(all_messages, level)
-        # Save to Firestore
         saveChat(
-            session_id, 
+            sessionId, 
             messages[-1]['content'] if messages else "", 
             result['reply']
         )
@@ -39,16 +35,16 @@ def chat():
             "reply": "Entschuldigung! Es gab ein Problem."
         }), 500  
     
-@chat_bp.route('/history/<session_id>', methods=['GET']) 
+@chat_bp.route('/history/<sessionId>', methods=['GET']) 
 @limiter 
-def history(session_id): 
+def history(sessionId): 
     try: 
-        logger.info(f"Fetching history for session: {session_id}")
-        history = getChatHistory(session_id) 
+        logger.info(f"Fetching history for session: {sessionId}")
+        history = getChatHistory(sessionId) 
         logger.info(f"Session result: {history}")
         return jsonify({"history": history})  
     
     except Exception as e: 
-        logger.error(f"History error for session {session_id}: {str(e)}") 
+        logger.error(f"History error for session {sessionId}: {str(e)}") 
         return jsonify({"error": str(e)}), 500
 

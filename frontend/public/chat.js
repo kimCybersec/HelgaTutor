@@ -17,8 +17,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     const apiBase = "https://helgatutorapi.onrender.com/api/chat";
-    let sessionId = localStorage.getItem("session_id") || generateSessionId();
-    localStorage.setItem("session_id", sessionId);
+    let sessionId = localStorage.getItem("sessionId") || generateSessionId();
+    localStorage.setItem("sessionId", sessionId);
     let isListening = false;
     let recognition;
 
@@ -221,7 +221,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const payload = {
                 messages: conversation,
                 level: levelSelect.value,
-                session_id: sessionId
+                sessionId: sessionId
             };
 
             const res = await fetch(apiBase, {
@@ -256,9 +256,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     clearBtn.onclick = () => {
         if (confirm("Möchtest du wirklich eine neue Sitzung starten? Der gesamte Chat-Verlauf wird gelöscht.")) {
-            localStorage.removeItem("session_id");
+            localStorage.removeItem("sessionId");
             sessionId = generateSessionId();
-            localStorage.setItem("session_id", sessionId);
+            localStorage.setItem("sessionId", sessionId);
             chatBox.innerHTML = '';
             addMessage("assistant", "Hallo! Ich bin Helga. Lass uns eine neue Deutschstunde beginnen!");
         }

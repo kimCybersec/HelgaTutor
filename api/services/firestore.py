@@ -17,9 +17,9 @@ initialize_app(cred)
 
 db = firestore.client()
 
-def saveChat(session_id, user_msg, helga_msg):
+def saveChat(sessionId, user_msg, helga_msg, level):
     try:
-        session_ref = db.collection('helgaSessions').document(session_id)
+        session_ref = db.collection('helgaSessions').document(sessionId)
         timestamp = datetime.now()
         
         # get messages
@@ -36,16 +36,16 @@ def saveChat(session_id, user_msg, helga_msg):
         session_ref.set({
             "messages": new_messages[-20:],
             "last_updated": timestamp,
-            "level": "A1"
+            "level": level
         }, merge=True)
         
     except Exception as e:
         print(f"Error saving chat: {str(e)}")
         raise RuntimeError(f"Failed to save chat: {str(e)}")
 
-def getChatHistory(session_id):
+def getChatHistory(sessionId):
     try:
-        session_ref = db.collection('helgaSessions').document(session_id)
+        session_ref = db.collection('helgaSessions').document(sessionId)
         session_doc = session_ref.get()
         
         if session_doc.exists:
