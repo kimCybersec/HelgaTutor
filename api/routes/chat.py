@@ -12,7 +12,7 @@ def chat():
     try: 
         data = request.get_json() 
         messages = data.get("messages", []) 
-        level = data.get("level", []) 
+        level = data.get("level", "A1") 
         sessionId = data.get("sessionId", "anonymous")
         history = getChatHistory(sessionId)
         all_messages = history + messages        
