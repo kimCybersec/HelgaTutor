@@ -13,4 +13,4 @@ app.register_blueprint(chat_bp, url_prefix="/api/chat")
 
 @app.route("/")
 def home():
-    return {"message": "Helga the tutor is running!"}
+    return {"message": "Helga the tutor is running perfectly fine!"}
